@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Weather Application</title>
+    <!-- Pico.css baseline structural reset layer -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <!-- Linking our pristine brand new static custom styling layout sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="app-container">
+        <header style="text-align: center;">
+            <h2>☁️ Weather Dashboard</h2>
+            <p>Enter any city name to fetch live conditions.</p>
+        </header>
+        
+        <!-- Flash Alert Notification Wrapper -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="error-box">
+                        <strong>⚠️ Notice:</strong> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Input Query Submission Interface -->
+        <form method="POST" action="/" class="search-form">
+            <input type="text" name="city" class="search-input" placeholder="Search city (e.g. Tokyo, Berlin)..." required>
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+
+        <!-- Weather Metrics Visualization Deck Layout Frame Component -->
+        {% if weather %}
+            <section class="weather-card">
+                <h3 class="city-title">{{ weather.city }}</h3>
+                <div class="card-subtitle">Current Conditions</div>
+                
+                <div class="temp-display">
+                    <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="{{ weather.description }} Icon" width="90" height="90">
+                    <h1>{{ weather.temp }}°C</h1>
+                </div>
+                
+                <div class="weather-desc">{{ weather.description }}</div>
+                <hr class="divider">
+                
+                <div class="metrics-row">
+                    <div class="metric-item">
+                        <small>Humidity</small>
+                        <strong>💧 {{ weather.humidity }}%</strong>
+                    </div>
+                    <div class="metric-item">
+                        <small>Wind Velocity</small>
+                        <strong>💨 {{ weather.wind }} m/s</strong>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>
